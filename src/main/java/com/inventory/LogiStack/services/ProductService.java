@@ -1,6 +1,7 @@
 package com.inventory.LogiStack.services;
 
 import com.inventory.LogiStack.dtos.ProductDto;
+import com.inventory.LogiStack.dtos.order.ProductRestockDto;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface ProductService {
     ProductDto updateProduct(Long id, ProductDto model);
     List<ProductDto> getProductBySupplier(Long supplierId);
     List<ProductDto> getProductByCategory(Long categoryId);
+    Boolean restockProduct(ProductRestockDto model);
 }

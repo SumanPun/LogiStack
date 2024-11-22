@@ -2,7 +2,9 @@ package com.inventory.LogiStack.controllers;
 
 import com.inventory.LogiStack.dtos.ApiResponse;
 import com.inventory.LogiStack.dtos.ProductDto;
+import com.inventory.LogiStack.dtos.order.ProductRestockDto;
 import com.inventory.LogiStack.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +47,16 @@ public class ProductController {
             return new ResponseEntity<>(ProductDeleted,HttpStatus.OK);
         }else {
             return new ResponseEntity<>(new ApiResponse("Product is not deleted with Product id : "+id,false),HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/restock")
+    public ResponseEntity<ApiResponse> restockProduct(@Valid @RequestBody ProductRestockDto model){
+        boolean deleteProduct = this.productService.restockProduct(model);
+        if(deleteProduct){
+            ApiResponse ProductDeleted = new ApiResponse("Product restock successfully",true);
+            return new ResponseEntity<>(ProductDeleted,HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(new ApiResponse("Product cannot be restock",false),HttpStatus.BAD_REQUEST);
         }
     }
 }

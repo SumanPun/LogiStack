@@ -1,6 +1,7 @@
 package com.inventory.LogiStack.services.impl;
 
 import com.inventory.LogiStack.dtos.ProductDto;
+import com.inventory.LogiStack.dtos.order.ProductRestockDto;
 import com.inventory.LogiStack.entity.Category;
 import com.inventory.LogiStack.entity.Product;
 import com.inventory.LogiStack.entity.Supplier;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,5 +107,18 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cateogry", "CategoryId", categoryId));
         List<Product> products = this.productRepository.getProductsByCategory(categoryId);
         return products.stream().map(product -> this.modelMapper.map(product, ProductDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean restockProduct(ProductRestockDto model) {
+        Product product = this.productRepository.getProduct(model.getId());
+        if (product != null){
+            int currentStock = product.getQuantity();
+            int newStock = currentStock + model.getQuantity();
+            product.setQuantity(newStock);
+            this.productRepository.save(product);
+            return true;
+        }
+        return false;
     }
 }
